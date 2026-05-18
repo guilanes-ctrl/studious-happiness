@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --blue:#003A70;--blue-mid:#00529A;--blue-lt:#1A6BB5;--blue-pale:#E8F0FB;
+  --gold:#C8991A;--gold-lt:#F0BE3A;--gold-pale:#FDF5DC;
+  --green:#0B6B3A;--green-lt:#E4F5EC;--green-mid:#1D9E5C;
+  --purple:#4A2880;--purple-lt:#EEE8FA;
+  --red:#C0392B;--red-lt:#FDECEB;
+  --bg:#F4F6FA;--surface:#FFF;--surface2:#EBF0F8;
+  --text:#0A1A2E;--text2:#4A5E78;--text3:#8A9BB0;--border:#D0DAE8;
+}
+body{
+  font-family:'Lato',sans-serif;
+  background:#1A1A1A;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px 16px;
+}
+
+/* IPHONE SHELL */
+.iphone{
+  width:375px;
+  height:812px;
+  background:#0A0A0A;
+  border-radius:54px;
+  position:relative;
+  flex-shrink:0;
+  overflow:hidden;
+  border:1px solid #333;
+  box-shadow:
+    0 0 0 1px #111,
+    inset 0 0 0 2px #2A2A2A,
+    0 40px 80px rgba(0,0,0,.8),
+    0 20px 40px rgba(0,0,0,.6);
+}
+
+/* Side buttons */
+.iphone::before{
+  content:'';
+  position:absolute;
+  left:-3px;top:140px;
+  width:3px;height:34px;
+  background:#1C1C1C;
+  border-radius:2px 0 0 2px;
+  box-shadow:0 44px 0 #1C1C1C, 0 88px 0 #1C1C1C;
+  z-index:200;
+}
+.iphone::after{
+  content:'';
+  position:absolute;
+  right:-3px;top:180px;
+  width:3px;height:72px;
+  background:#1C1C1C;
+  border-radius:0 2px 2px 0;
+  z-index:200;
+}
+
+/* Screen bezel */
+.screen{
+  position:absolute;
+  inset:0;
+  border-radius:53px;
+  overflow:hidden;
+  background:var(--bg);
+}
+
+/* Dynamic Island */
+.dynamic-island{
+  position:absolute;
+  top:12px;
+  left:50%;
+  transform:translateX(-50%);
+  width:120px;
+  height:34px;
+  background:#000;
+  border-radius:20px;
+  z-index:150;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
+}
+.di-camera{
+  width:10px;height:10px;border-radius:50%;
+  background:#1A1A1A;
+  border:2px solid #0D0D0D;
+  position:relative;
+}
+.di-camera::after{
+  content:'';position:absolute;
+  width:4px;height:4px;border-radius:50%;
+  background:#0D4070;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+}
+.di-dot{width:6px;height:6px;border-radius:50%;background:#1A1A1A;}
+
+/* Status bar inside screen */
+.statusbar{
+  height:54px;
+  background:var(--blue);
+  display:flex;
+  align-items:flex-end;
+  padding:0 24px 8px;
+  justify-content:space-between;
+  position:relative;
+  z-index:10;
+}
+.sb-left{font-size:15px;font-weight:700;color:rgba(255,255,255,.0);}
+.sb-right{display:flex;align-items:center;gap:6px;}
+.sb-right span{font-size:12px;color:rgba(255,255,255,.7);font-weight:600;}
+.sb-signal{display:flex;gap:2px;align-items:flex-end;}
+.sb-bar{background:rgba(255,255,255,.7);border-radius:1px;width:3px;}
+.sb-wifi{font-size:13px;color:rgba(255,255,255,.7);}
+.sb-battery{width:22px;height:12px;border-radius:3px;border:1.5px solid rgba(255,255,255,.5);position:relative;margin-left:2px;}
+.sb-battery::after{content:'';position:absolute;right:-4px;top:50%;transform:translateY(-50%);width:3px;height:6px;background:rgba(255,255,255,.4);border-radius:0 1px 1px 0;}
+.sb-battery-fill{position:absolute;left:1px;top:1px;bottom:1px;width:80%;background:rgba(255,255,255,.7);border-radius:1.5px;}
+
+/* App content — scrollable area inside iPhone */
+.app{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+.page{display:none;flex-direction:column;flex:1;overflow:hidden;}
+.page.on{display:flex;}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.scroll::-webkit-scrollbar{display:none;}
+
+/* HEADER */
+.hdr{background:var(--blue);padding:12px 20px 16px;flex-shrink:0;}
+.hdr-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.eyebrow{font-size:10px;color:var(--gold-lt);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-bottom:2px;}
+.htitle{font-family:'Playfair Display',serif;font-size:21px;color:#fff;font-style:italic;line-height:1.15;}
+.htitle span{color:var(--gold-lt);}
+.hactions{display:flex;gap:7px;}
+.ibtn{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.1);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;position:relative;flex-shrink:0;}
+.ibtn i{font-size:15px;}
+.ndot{width:7px;height:7px;border-radius:50%;background:var(--gold-lt);position:absolute;top:5px;right:5px;border:1.5px solid var(--blue);}
+.sbox{background:rgba(255,255,255,.1);border:0.5px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px;display:flex;align-items:center;gap:7px;}
+.sbox i{font-size:14px;color:rgba(255,255,255,.4);}
+.sbox span{font-size:12px;color:rgba(255,255,255,.4);}
+.srow{display:flex;gap:7px;}
+.srow .sbox{flex:1;}
+.pbtn{background:var(--gold);border:none;border-radius:9px;padding:8px 12px;color:#fff;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:4px;white-space:nowrap;}
+.pbtn i{font-size:13px;}
+
+/* CHIPS */
+.chips{display:flex;gap:6px;padding:10px 20px 0;overflow-x:auto;scrollbar-width:none;flex-shrink:0;}
+.chips::-webkit-scrollbar{display:none;}
+.chip{padding:5px 11px;border-radius:20px;font-size:10px;font-weight:700;border:0.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.chip.on{background:var(--blue);color:#fff;border-color:var(--blue);}
+
+/* CARDS */
+.feed{padding:10px 20px 0;}
+.sec{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin:10px 0 7px;display:flex;align-items:center;gap:8px;}
+.sec::after{content:'';flex:1;height:0.5px;background:var(--border);}
+
+.ocard{background:var(--surface);border-radius:13px;border:0.5px solid var(--border);padding:12px 13px;margin-bottom:8px;cursor:pointer;}
+.ocard-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+.badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.2px;}
+.b-ic{background:var(--blue-pale);color:var(--blue);}
+.b-ext{background:var(--green-lt);color:var(--green);}
+.b-vol{background:var(--purple-lt);color:var(--purple);}
+.b-art{background:var(--gold-pale);color:#7A5C00;}
+.match{font-size:10px;color:var(--blue);font-weight:700;display:flex;align-items:center;gap:2px;}
+.match i{font-size:10px;}
+.otitle{font-size:12px;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:5px;}
+.prow{font-size:11px;color:var(--text2);display:flex;align-items:center;gap:5px;margin-bottom:6px;}
+.av{width:16px;height:16px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:6px;font-weight:700;color:#fff;flex-shrink:0;}
+.tags{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:8px;}
+.tag{font-size:9px;padding:2px 6px;border-radius:4px;background:var(--surface2);color:var(--text2);}
+.obot{display:flex;justify-content:space-between;align-items:center;}
+.oinfo{font-size:10px;color:var(--text3);display:flex;gap:7px;}
+.oinfo span{display:flex;align-items:center;gap:2px;}
+.oinfo i{font-size:10px;}
+.abtn{font-size:10px;font-weight:700;padding:5px 11px;border-radius:6px;color:#fff;border:none;cursor:pointer;}
+.abtn-blue{background:var(--blue);}
+.abtn-green{background:var(--green-mid);}
+.abtn-purple{background:var(--purple);}
+
+/* STATS */
+.stats{display:flex;gap:7px;padding:10px 20px 0;overflow-x:auto;scrollbar-width:none;}
+.stats::-webkit-scrollbar{display:none;}
+.stat{background:var(--surface);border-radius:9px;padding:9px 13px;border:0.5px solid var(--border);flex-shrink:0;}
+.stat-n{font-family:'Playfair Display',serif;font-size:18px;color:var(--blue);font-style:italic;}
+.stat-l{font-size:10px;color:var(--text3);}
+
+/* HBAR */
+.hbar{border-radius:11px;padding:10px 13px;margin:10px 20px 0;display:flex;align-items:center;gap:9px;}
+.hbar i{font-size:16px;flex-shrink:0;}
+.hbar p:first-child{font-size:11px;font-weight:700;}
+.hbar p:last-child{font-size:10px;margin-top:1px;}
+.hbar-gold{background:var(--gold-pale);border:0.5px solid #E8D47A;}
+.hbar-gold i,.hbar-gold p:first-child{color:#7A5C00;}
+.hbar-gold p:last-child{color:#9A7A20;}
+.hbar-blue{background:var(--blue-pale);border:0.5px solid #B8CCE8;}
+.hbar-blue i,.hbar-blue p:first-child{color:var(--blue);}
+.hbar-blue p:last-child{color:var(--blue-lt);}
+
+/* PCARD */
+.pcard{background:var(--surface);border-radius:13px;border:0.5px solid var(--border);padding:12px 13px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start;cursor:pointer;}
+.pav{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:15px;flex-shrink:0;}
+.pname{font-size:12px;font-weight:700;color:var(--text);}
+.pdept{font-size:10px;color:var(--text2);margin-top:1px;}
+.pneed{font-size:10px;margin-top:4px;display:flex;align-items:center;gap:3px;}
+.pneed i{font-size:10px;}
+.pvaga{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;align-self:flex-start;white-space:nowrap;}
+
+/* BAZAR */
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:8px;}
+.bcard{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);overflow:hidden;cursor:pointer;}
+.bcard.sold{opacity:.65;}
+.bimg{height:88px;display:flex;align-items:center;justify-content:center;position:relative;}
+.bimg i{font-size:28px;}
+.bimg.livro{background:var(--blue-pale);}  .bimg.livro i{color:var(--blue-mid);}
+.bimg.roupa{background:#EAF4FF;}           .bimg.roupa i{color:var(--blue-lt);}
+.bimg.equip{background:var(--gold-pale);}  .bimg.equip i{color:var(--gold);}
+.bimg.elet{background:#EEF2F8;}            .bimg.elet i{color:var(--text2);}
+.sold-ov{position:absolute;inset:0;background:rgba(255,255,255,.78);display:flex;align-items:center;justify-content:center;}
+.sold-pill{background:#EEF1F5;color:#7A8FA8;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;border:0.5px solid var(--border);}
+.bbody{padding:8px 9px 9px;}
+.bprice{font-family:'Playfair Display',serif;font-size:14px;color:var(--gold);}
+.bname{font-size:10px;font-weight:700;color:var(--text);line-height:1.3;margin:2px 0 3px;}
+.bseller{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:3px;}
+.btime{font-size:9px;color:var(--text3);margin-top:3px;}
+
+.wcard{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);padding:10px 12px;margin-bottom:8px;display:flex;gap:10px;align-items:center;}
+.wimg{width:46px;height:46px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.wimg i{font-size:20px;}
+.winfo{flex:1;min-width:0;}
+.wprice{font-family:'Playfair Display',serif;font-size:13px;color:var(--gold);}
+.wname{font-size:11px;font-weight:700;color:var(--text);margin:1px 0 2px;}
+.wmeta{font-size:10px;color:var(--text3);display:flex;gap:6px;}
+.wbtn{background:var(--blue);border:none;border-radius:7px;padding:6px 10px;color:#fff;font-size:10px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px;flex-shrink:0;}
+.wbtn i{font-size:12px;}
+
+/* NOTIF */
+.ncard{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);padding:11px 12px;margin-bottom:7px;display:flex;gap:10px;align-items:flex-start;}
+.ncard.unread{border-left:3px solid var(--blue);border-radius:0 12px 12px 0;}
+.nico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nico i{font-size:15px;}
+.ntitle{font-size:11px;font-weight:700;color:var(--text);line-height:1.3;}
+.nsub{font-size:10px;color:var(--text2);margin-top:2px;line-height:1.4;}
+.ntime{font-size:10px;color:var(--text3);margin-top:3px;}
+
+/* PERFIL */
+.prof-hero{background:var(--blue);padding:16px 20px 22px;text-align:center;}
+.prof-av{width:64px;height:64px;border-radius:18px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-family:'Playfair Display',serif;font-size:24px;color:var(--gold-lt);}
+.prof-nm{font-family:'Playfair Display',serif;font-size:18px;color:#fff;font-style:italic;}
+.prof-sub{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;}
+.prof-tags{display:flex;justify-content:center;gap:5px;margin-top:9px;flex-wrap:wrap;}
+.ptag{font-size:9px;font-weight:700;padding:2px 9px;border-radius:20px;background:rgba(255,255,255,.12);color:rgba(255,255,255,.75);}
+.prog-bar{background:rgba(255,255,255,.15);border-radius:5px;height:5px;margin-top:12px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--gold);width:72%;border-radius:5px;}
+.prog-lbl{font-size:9px;color:rgba(255,255,255,.45);margin-top:4px;}
+
+.stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:12px 20px 0;}
+.sg{background:var(--surface);border-radius:10px;border:0.5px solid var(--border);padding:10px 12px;}
+.sg-n{font-family:'Playfair Display',serif;font-size:20px;color:var(--blue);font-style:italic;}
+.sg-l{font-size:10px;color:var(--text2);margin-top:1px;}
+
+.pf-sec{padding:12px 20px 0;}
+.pf-tit{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;}
+.pf-card{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);overflow:hidden;margin-bottom:10px;}
+.pfrow{display:flex;align-items:center;padding:10px 13px;border-bottom:0.5px solid var(--border);cursor:pointer;}
+.pfrow:last-child{border-bottom:none;}
+.pfrow-ico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-right:10px;}
+.pfrow-ico i{font-size:14px;}
+.pfrow-nm{font-size:12px;font-weight:700;color:var(--text);}
+.pfrow-sb{font-size:10px;color:var(--text2);margin-top:1px;}
+.pfrow-r{font-size:12px;color:var(--text3);margin-left:auto;}
+
+.int-wrap{display:flex;flex-wrap:wrap;gap:5px;padding:0 20px 10px;}
+.int-tag{padding:5px 11px;border-radius:20px;font-size:10px;font-weight:700;border:0.5px solid var(--border);background:var(--surface);color:var(--text2);}
+.int-tag.sel{background:var(--blue);color:#fff;border-color:var(--blue);}
+.int-tag.add{border-style:dashed;color:var(--text3);}
+
+/* LOGIN */
+.login-hero{background:var(--blue);padding:44px 28px 36px;text-align:center;flex-shrink:0;}
+.llogo{width:60px;height:60px;border-radius:16px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+.llogo i{font-size:28px;color:var(--gold-lt);}
+.leyebrow{font-size:9px;color:var(--gold-lt);text-transform:uppercase;letter-spacing:1.4px;font-weight:700;margin-bottom:4px;}
+.ltitle{font-family:'Playfair Display',serif;font-size:24px;color:#fff;font-style:italic;}
+.ltitle span{color:var(--gold-lt);}
+.lsub{font-size:11px;color:rgba(255,255,255,.45);margin-top:6px;line-height:1.5;}
+.lbody{padding:20px 20px;display:flex;flex-direction:column;gap:9px;}
+.msbtn{width:100%;padding:12px 14px;border-radius:11px;background:#fff;border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;gap:10px;transition:border .15s;}
+.msico{width:18px;height:18px;flex-shrink:0;}
+.msbtn-t p:first-child{font-size:13px;font-weight:700;color:var(--text);text-align:left;}
+.msbtn-t p:last-child{font-size:10px;color:var(--text3);text-align:left;margin-top:1px;}
+.msbtn .ti{font-size:14px;color:var(--text3);margin-left:auto;}
+.or-row{display:flex;align-items:center;gap:8px;}
+.or-line{flex:1;height:0.5px;background:var(--border);}
+.or-txt{font-size:10px;color:var(--text3);}
+.lfield label{font-size:10px;font-weight:700;color:var(--text2);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px;}
+.lfield input{width:100%;padding:10px 12px;border:0.5px solid var(--border);border-radius:9px;font-size:13px;color:var(--text);background:var(--bg);font-family:inherit;}
+.lsubmit{width:100%;padding:12px;border-radius:10px;background:var(--blue);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;}
+.sec-row{display:flex;align-items:center;gap:6px;padding:8px 11px;background:var(--gold-pale);border-radius:8px;border:0.5px solid #E8D47A;}
+.sec-row i{font-size:13px;color:var(--gold);flex-shrink:0;}
+.sec-row span{font-size:10px;color:#7A5C00;}
+
+/* NAVBAR */
+.navbar{background:var(--surface);border-top:0.5px solid var(--border);padding:8px 0 20px;display:flex;justify-content:space-around;align-items:center;flex-shrink:0;}
+.ni{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:3px 8px;border-radius:9px;border:none;background:transparent;}
+.ni.on{background:var(--blue-pale);}
+.ni i{font-size:19px;color:var(--text3);}
+.ni.on i{color:var(--blue);}
+.nl{font-size:9px;color:var(--text3);}
+.ni.on .nl{color:var(--blue);font-weight:700;}
+.nidot{width:5px;height:5px;border-radius:50%;background:var(--gold);margin:-1px auto 0;}
+
+/* TYPE TABS */
+.ttabs{display:flex;margin:10px 20px 0;background:var(--surface);border-radius:9px;border:0.5px solid var(--border);overflow:hidden;flex-shrink:0;}
+.tt{flex:1;padding:8px 2px;font-size:9px;font-weight:700;text-align:center;cursor:pointer;color:var(--text3);border:none;background:transparent;font-family:inherit;letter-spacing:.1px;}
+.tt.on{background:var(--blue);color:#fff;}
+.tt i{display:block;font-size:15px;margin:0 auto 2px;}
+
+/* HOME WELCOME */
+.welcome-strip{background:var(--blue);padding:0 20px 16px;}
+</style>
+</head>
+<body>
+
+<div class="iphone">
+  <div class="screen">
+
+    <!-- Dynamic Island -->
+    <div class="dynamic-island">
+      <div class="di-camera"></div>
+      <div class="di-dot"></div>
+    </div>
+
+    <!-- Status bar -->
+    <div class="statusbar">
+      <span class="sb-left">9:41</span>
+      <div style="position:absolute;left:50%;transform:translateX(-50%);bottom:8px;font-size:15px;font-weight:600;color:#fff;">9:41</div>
+      <div class="sb-right">
+        <div class="sb-signal">
+          <div class="sb-bar" style="height:4px;"></div>
+          <div class="sb-bar" style="height:6px;"></div>
+          <div class="sb-bar" style="height:9px;"></div>
+          <div class="sb-bar" style="height:11px;"></div>
+        </div>
+        <i class="ti ti-wifi sb-wifi" aria-hidden="true"></i>
+        <div class="sb-battery"><div class="sb-battery-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- APP -->
+    <div class="app">
+
+      <!-- LOGIN -->
+      <div id="p-login" class="page on">
+        <div class="scroll">
+          <div class="login-hero">
+            <div class="llogo"><i class="ti ti-microscope" aria-hidden="true"></i></div>
+            <div class="leyebrow">Faculdade Santa Marcelina</div>
+            <div class="ltitle">IC <span>Connect</span></div>
+            <div class="lsub">IC · Extensão · Voluntariado · Bazarzinho</div>
+          </div>
+          <div class="lbody">
+            <div class="sec-row"><i class="ti ti-shield-lock" aria-hidden="true"></i><span>Exclusivo para a comunidade FASM</span></div>
+            <button class="msbtn" onclick="go('p-home')">
+              <svg class="msico" viewBox="0 0 21 21"><rect x="1" y="1" width="9" height="9" fill="#F25022"/><rect x="11" y="1" width="9" height="9" fill="#7FBA00"/><rect x="1" y="11" width="9" height="9" fill="#00A4EF"/><rect x="11" y="11" width="9" height="9" fill="#FFB900"/></svg>
+              <div class="msbtn-t"><p>Entrar com Microsoft</p><p>@santamarcelina.edu.br</p></div>
+              <i class="ti ti-arrow-right" aria-hidden="true"></i>
+            </button>
+            <div class="or-row"><div class="or-line"></div><span class="or-txt">ou email institucional</span><div class="or-line"></div></div>
+            <div class="lfield"><label>Email</label><input type="email" placeholder="rgm@santamarcelina.edu.br"></div>
+            <button class="lsubmit" onclick="go('p-home')">Continuar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- HOME -->
+      <div id="p-home" class="page">
+        <div class="hdr">
+          <div class="hdr-row">
+            <div><div class="eyebrow">Bom dia · Medicina 4° ano</div><div class="htitle">Olá, <span>Ana</span></div></div>
+            <div class="hactions">
+              <div style="position:relative;"><button class="ibtn" onclick="go('p-notif')" aria-label="Notificações"><i class="ti ti-bell" aria-hidden="true"></i></button><div class="ndot"></div></div>
+              <button class="ibtn" onclick="go('p-perfil')" aria-label="Perfil"><i class="ti ti-user" aria-hidden="true"></i></button>
+            </div>
+          </div>
+          <div class="sbox" style="cursor:pointer;" onclick="go('p-opp')"><i class="ti ti-search" aria-hidden="true"></i><span>Buscar IC, extensão, voluntariado...</span></div>
+        </div>
+        <div class="scroll">
+          <div class="stats">
+            <div class="stat"><div class="stat-n">47</div><div class="stat-l">Vagas ativas</div></div>
+            <div class="stat"><div class="stat-n">12</div><div class="stat-l">Na FASM</div></div>
+            <div class="stat"><div class="stat-n">23</div><div class="stat-l">Externas SP</div></div>
+            <div class="stat"><div class="stat-n">8</div><div class="stat-l">Artigos</div></div>
+          </div>
+          <div class="hbar hbar-gold"><i class="ti ti-sparkles" aria-hidden="true"></i><div><p>3 oportunidades para você</p><p>Cardiologia · Pediatria · Saúde pública</p></div></div>
+          <div class="feed">
+            <div class="sec">Em destaque</div>
+            <div class="ocard">
+              <div class="ocard-top"><span class="badge b-ic">IC FAPESP</span><span class="match"><i class="ti ti-sparkles" aria-hidden="true"></i>92% match</span></div>
+              <div class="otitle">Microbioma intestinal e doenças inflamatórias</div>
+              <div class="prow"><span class="av" style="background:var(--blue);">CM</span>Prof. Dra. Carla Mendes · FASM</div>
+              <div class="tags"><span class="tag">Gastro</span><span class="tag">FAPESP bolsa</span></div>
+              <div class="obot"><div class="oinfo"><span><i class="ti ti-clock" aria-hidden="true"></i>15 Jun</span><span><i class="ti ti-users" aria-hidden="true"></i>2 vagas</span></div><button class="abtn abtn-blue">Ver vaga</button></div>
+            </div>
+            <div class="ocard">
+              <div class="ocard-top"><span class="badge b-ext">Extensão</span><span class="match" style="color:var(--red);"><i class="ti ti-clock-exclamation" aria-hidden="true"></i>3 dias</span></div>
+              <div class="otitle">Atenção primária em Itaquera — UBS</div>
+              <div class="prow"><span class="av" style="background:var(--green-mid);">FO</span>Prof. Dr. Felipe Oliveira · Med. Família</div>
+              <div class="tags"><span class="tag">Saúde pública</span><span class="tag">Sábados</span></div>
+              <div class="obot"><div class="oinfo"><span><i class="ti ti-clock" aria-hidden="true"></i>20 Jun</span></div><button class="abtn abtn-green">Ver vaga</button></div>
+            </div>
+            <div class="sec">Professores buscando alunos</div>
+            <div class="pcard" onclick="go('p-rede')">
+              <div class="pav" style="background:var(--blue-pale);color:var(--blue);">AM</div>
+              <div style="flex:1;"><div class="pname">Prof. Dr. André Moreira</div><div class="pdept">Cardiologia · FASM</div><div class="pneed" style="color:var(--blue);"><i class="ti ti-microscope" aria-hidden="true"></i>IC em hipertensão · 2 vagas</div></div>
+              <span class="pvaga" style="background:var(--gold-pale);color:#7A5C00;">5 vagas</span>
+            </div>
+            <div class="sec">Bazarzinho</div>
+            <div class="wcard" onclick="go('p-bazar')">
+              <div class="wimg" style="background:var(--blue-pale);"><i class="ti ti-book" aria-hidden="true" style="color:var(--blue-mid);"></i></div>
+              <div class="winfo"><div class="wprice">R$ 120</div><div class="wname">Gray's Anatomy 42ª ed.</div><div class="wmeta"><span>Julia M.</span><span>há 2h</span></div></div>
+              <button class="wbtn"><i class="ti ti-brand-whatsapp" aria-hidden="true"></i>Falar</button>
+            </div>
+            <div style="height:12px;"></div>
+          </div>
+        </div>
+        <div class="navbar">
+          <button class="ni on" onclick="go('p-home')"><i class="ti ti-home" aria-hidden="true"></i><span class="nl">Início</span></button>
+          <button class="ni" onclick="go('p-opp')"><i class="ti ti-search" aria-hidden="true"></i><span class="nl">Buscar</span><div class="nidot"></div></button>
+          <button class="ni" onclick="go('p-rede')"><i class="ti ti-users" aria-hidden="true"></i><span class="nl">Rede</span></button>
+          <button class="ni" onclick="go('p-bazar')"><i class="ti ti-shopping-bag" aria-hidden="true"></i><span class="nl">Bazarzinho</span></button>
+          <button class="ni" onclick="go('p-perfil')"><i class="ti ti-user" aria-hidden="true"></i><span class="nl">Perfil</span></button>
+        </div>
+      </div>
+
+      <!-- OPORTUNIDADES -->
+      <div id="p-opp" class="page">
+        <div class="hdr">
+          <div class="hdr-row"><div><div class="eyebrow">FASM · São Paulo</div><div class="htitle">Opor<span>tunidades</span></div></div><div class="hactions"><button class="ibtn" aria-label="Filtros"><i class="ti ti-adjustments-horizontal" aria-hidden="true"></i></button></div></div>
+          <div class="srow"><div class="sbox"><i class="ti ti-search" aria-hidden="true"></i><span>Área, professor, instituição...</span></div><button class="pbtn"><i class="ti ti-plus" aria-hidden="true"></i>Postar</button></div>
+        </div>
+        <div class="ttabs">
+          <button class="tt on"><i class="ti ti-layout-grid" aria-hidden="true"></i>Tudo</button>
+          <button class="tt"><i class="ti ti-microscope" aria-hidden="true"></i>IC</button>
+          <button class="tt"><i class="ti ti-building-community" aria-hidden="true"></i>Extensão</button>
+          <button class="tt"><i class="ti ti-heart-handshake" aria-hidden="true"></i>Voluntariado</button>
+        </div>
+        <div class="chips"><span class="chip on">Todas as áreas</span><span class="chip">Cardiologia</span><span class="chip">Pediatria</span><span class="chip">Com bolsa</span><span class="chip">Fins de semana</span></div>
+        <div class="scroll">
+          <div class="feed">
+            <div class="hbar hbar-gold" style="margin:10px 0 0;"><i class="ti ti-clock-exclamation" aria-hidden="true"></i><div><p>2 com prazo esta semana</p><p>Extensão Itaquera · Voluntariado oncologia</p></div></div>
+            <div class="sec">Para você</div>
+            <div class="ocard"><div class="ocard-top"><span class="badge b-ic">IC FAPESP</span><span class="match"><i class="ti ti-sparkles" aria-hidden="true"></i>94%</span></div><div class="otitle">Microbioma intestinal e doenças inflamatórias</div><div class="prow"><span class="av" style="background:var(--blue);">CM</span>Prof. Dra. Carla Mendes · FASM</div><div class="tags"><span class="tag">Gastro</span><span class="tag">Bolsa R$800</span></div><div class="obot"><div class="oinfo"><span><i class="ti ti-clock" aria-hidden="true"></i>15 Jun</span><span><i class="ti ti-users" aria-hidden="true"></i>2 vagas</span></div><button class="abtn abtn-blue">Ver</button></div></div>
+            <div class="ocard"><div class="ocard-top"><span class="badge b-ext">Extensão</span><span class="match" style="color:var(--red);"><i class="ti ti-clock-exclamation" aria-hidden="true"></i>3 dias</span></div><div class="otitle">Atenção primária em Itaquera — UBS</div><div class="prow"><span class="av" style="background:var(--green-mid);">FO</span>Prof. Dr. Felipe Oliveira</div><div class="tags"><span class="tag">Saúde pública</span><span class="tag">Sábados</span></div><div class="obot"><div class="oinfo"><span><i class="ti ti-clock" aria-hidden="true"></i>20 Jun</span></div><button class="abtn abtn-green">Ver</button></div></div>
+            <div class="ocard"><div class="ocard-top"><span class="badge b-vol">Voluntariado</span></div><div class="otitle">Liga de Oncologia — A.C. Camargo</div><div class="prow"><span class="av" style="background:var(--purple);">LO</span>Liga de Oncologia FASM</div><div class="tags"><span class="tag">Oncologia</span><span class="tag">Quinzenais</span></div><div class="obot"><div class="oinfo"><span><i class="ti ti-users" aria-hidden="true"></i>8 vagas</span></div><button class="abtn abtn-purple">Ver</button></div></div>
+            <div class="ocard"><div class="ocard-top"><span class="badge b-art">Artigo</span><span class="match" style="color:var(--red);"><i class="ti ti-flame" aria-hidden="true"></i>Urgente</span></div><div class="otitle">Co-autoria: Sepse neonatal em UTI</div><div class="prow"><span class="av" style="background:var(--blue-mid);">RB</span>Dr. Ricardo Borges · R3 USP</div><div class="tags"><span class="tag">Pediatria</span><span class="tag">Coleta dados</span></div><div class="obot"><div class="oinfo"><span><i class="ti ti-clock" aria-hidden="true"></i>1 Jun</span></div><button class="abtn abtn-blue">Ver</button></div></div>
+            <div style="height:12px;"></div>
+          </div>
+        </div>
+        <div class="navbar">
+          <button class="ni" onclick="go('p-home')"><i class="ti ti-home" aria-hidden="true"></i><span class="nl">Início</span></button>
+          <button class="ni on" onclick="go('p-opp')"><i class="ti ti-search" aria-hidden="true"></i><span class="nl">Buscar</span></button>
+          <button class="ni" onclick="go('p-rede')"><i class="ti ti-users" aria-hidden="true"></i><span class="nl">Rede</span></button>
+          <button class="ni" onclick="go('p-bazar')"><i class="ti ti-shopping-bag" aria-hidden="true"></i><span class="nl">Bazarzinho</span></button>
+          <button class="ni" onclick="go('p-perfil')"><i class="ti ti-user" aria-hidden="true"></i><span class="nl">Perfil</span></button>
+        </div>
+      </div>
+
+      <!-- REDE -->
+      <div id="p-rede" class="page">
+        <div class="hdr"><div class="hdr-row"><div><div class="eyebrow">FASM · Pesquisadores</div><div class="htitle">Rede de <span>pesquisa</span></div></div><div class="hactions"><button class="ibtn" aria-label="Buscar"><i class="ti ti-search" aria-hidden="true"></i></button></div></div><div class="sbox"><i class="ti ti-search" aria-hidden="true"></i><span>Buscar professor, residente, liga...</span></div></div>
+        <div class="chips"><span class="chip on">Todos</span><span class="chip">Professores</span><span class="chip">Residentes</span><span class="chip">Ligas</span></div>
+        <div class="scroll">
+          <div class="feed">
+            <div class="sec">Com vagas abertas</div>
+            <div style="background:var(--surface);border-radius:13px;border:0.5px solid var(--border);padding:12px 13px;margin-bottom:8px;">
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <div class="pav" style="background:var(--blue-pale);color:var(--blue);">AM</div>
+                <div style="flex:1;"><div class="pname">Prof. Dr. André Moreira</div><div class="pdept">Cardiologia · FASM</div><div class="pneed" style="color:var(--blue);"><i class="ti ti-microscope" aria-hidden="true"></i>IC em hipertensão · 2 vagas</div><div class="pneed" style="color:var(--green-mid);margin-top:2px;"><i class="ti ti-building-community" aria-hidden="true"></i>Extensão cardiovascular · 3 vagas</div></div>
+                <span class="pvaga" style="background:var(--gold-pale);color:#7A5C00;">5</span>
+              </div>
+              <div style="margin-top:9px;padding-top:9px;border-top:0.5px solid var(--border);font-size:10px;color:var(--text2);line-height:1.5;">Pesquisa sobre hipertensão arterial resistente e biomarcadores cardíacos. Sem experiência prévia necessária.</div>
+              <div style="margin-top:8px;display:flex;gap:6px;"><button class="abtn abtn-blue" style="font-size:10px;padding:5px 11px;">Contato</button><button style="font-size:10px;padding:5px 11px;border-radius:6px;border:0.5px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;">Projetos</button></div>
+            </div>
+            <div style="background:var(--surface);border-radius:13px;border:0.5px solid var(--border);padding:12px 13px;margin-bottom:8px;">
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <div class="pav" style="background:var(--purple-lt);color:var(--purple);">LF</div>
+                <div style="flex:1;"><div class="pname">Prof. Dra. Lúcia Ferreira</div><div class="pdept">Oncologia · A.C. Camargo</div><div class="pneed" style="color:var(--purple);"><i class="ti ti-file-text" aria-hidden="true"></i>Artigo câncer de mama</div></div>
+                <span class="pvaga" style="background:var(--purple-lt);color:var(--purple);">1</span>
+              </div>
+              <div style="margin-top:8px;"><button class="abtn abtn-purple" style="font-size:10px;padding:5px 11px;">Contato</button></div>
+            </div>
+            <div class="sec">Residentes — urgente</div>
+            <div style="background:var(--surface);border-radius:0 13px 13px 0;border:0.5px solid var(--border);border-left:3px solid var(--red);padding:12px 13px;margin-bottom:8px;">
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <div class="pav" style="background:var(--red-lt);color:var(--red);">RB</div>
+                <div style="flex:1;"><div class="pname">Dr. Ricardo Borges</div><div class="pdept">R3 Pediatria · ICr USP</div><div class="pneed" style="color:var(--red);"><i class="ti ti-flame" aria-hidden="true"></i>Deadline 1 Jun</div></div>
+                <span class="pvaga" style="background:var(--red-lt);color:var(--red);">Urg.</span>
+              </div>
+              <div style="margin-top:8px;"><button class="abtn abtn-blue" style="font-size:10px;padding:5px 11px;">Contato</button></div>
+            </div>
+            <div style="height:12px;"></div>
+          </div>
+        </div>
+        <div class="navbar">
+          <button class="ni" onclick="go('p-home')"><i class="ti ti-home" aria-hidden="true"></i><span class="nl">Início</span></button>
+          <button class="ni" onclick="go('p-opp')"><i class="ti ti-search" aria-hidden="true"></i><span class="nl">Buscar</span></button>
+          <button class="ni on" onclick="go('p-rede')"><i class="ti ti-users" aria-hidden="true"></i><span class="nl">Rede</span></button>
+          <button class="ni" onclick="go('p-bazar')"><i class="ti ti-shopping-bag" aria-hidden="true"></i><span class="nl">Bazarzinho</span></button>
+          <button class="ni" onclick="go('p-perfil')"><i class="ti ti-user" aria-hidden="true"></i><span class="nl">Perfil</span></button>
+        </div>
+      </div>
+
+      <!-- BAZAR -->
+      <div id="p-bazar" class="page">
+        <div class="hdr"><div class="hdr-row"><div><div class="eyebrow">FASM · Comunidade</div><div class="htitle">Bazar<span>zinho</span></div></div><div class="hactions"><div style="position:relative;"><button class="ibtn" aria-label="Notificações"><i class="ti ti-bell" aria-hidden="true"></i></button><div class="ndot"></div></div><button class="ibtn" aria-label="Meus anúncios"><i class="ti ti-package" aria-hidden="true"></i></button></div></div><div class="srow"><div class="sbox"><i class="ti ti-search" aria-hidden="true"></i><span>Buscar produto...</span></div><button class="pbtn"><i class="ti ti-plus" aria-hidden="true"></i>Vender</button></div></div>
+        <div class="chips"><span class="chip on">Tudo</span><span class="chip">Livros</span><span class="chip">Roupas</span><span class="chip">Equip.</span><span class="chip">Eletrônicos</span></div>
+        <div class="scroll">
+          <div class="stats" style="padding-top:10px;"><div class="stat"><div class="stat-n">83</div><div class="stat-l">Anúncios</div></div><div class="stat"><div class="stat-n">41</div><div class="stat-l">Livros</div></div><div class="stat"><div class="stat-n">28</div><div class="stat-l">Roupas</div></div><div class="stat"><div class="stat-n">14</div><div class="stat-l">Equip.</div></div></div>
+          <div class="hbar hbar-blue" style="margin:10px 20px 0;"><i class="ti ti-sparkles" aria-hidden="true"></i><div><p>3 novos hoje</p><p>Anatomia · Jaleco · iPad</p></div></div>
+          <div class="feed">
+            <div class="sec">Recentes</div>
+            <div class="grid2">
+              <div class="bcard"><div class="bimg livro"><i class="ti ti-book" aria-hidden="true"></i></div><div class="bbody"><div class="bprice">R$ 120</div><div class="bname">Gray's Anatomy 42ª</div><div class="bseller"><span class="av" style="background:var(--blue);width:12px;height:12px;font-size:6px;">JM</span>Julia M.</div><div class="btime">há 2h</div></div></div>
+              <div class="bcard"><div class="bimg roupa"><i class="ti ti-shirt" aria-hidden="true"></i></div><div class="bbody"><div class="bprice">R$ 55</div><div class="bname">Jaleco branco M</div><div class="bseller"><span class="av" style="background:var(--blue-lt);width:12px;height:12px;font-size:6px;">RP</span>Rafael P.</div><div class="btime">há 4h</div></div></div>
+              <div class="bcard sold"><div class="bimg livro"><i class="ti ti-book" aria-hidden="true"></i><div class="sold-ov"><span class="sold-pill">Vendido</span></div></div><div class="bbody"><div class="bprice" style="color:var(--text3);">R$ 80</div><div class="bname">Netter Atlas 7ª</div><div class="bseller"><span class="av" style="background:var(--gold);width:12px;height:12px;font-size:6px;">AS</span>Ana S.</div></div></div>
+              <div class="bcard"><div class="bimg equip"><i class="ti ti-stethoscope" aria-hidden="true"></i></div><div class="bbody"><div class="bprice">R$ 180</div><div class="bname">Littmann Classic</div><div class="bseller"><span class="av" style="background:var(--blue-mid);width:12px;height:12px;font-size:6px;">LC</span>Lucas C.</div><div class="btime">há 1 dia</div></div></div>
+            </div>
+            <div class="sec">Mais itens</div>
+            <div class="wcard"><div class="wimg elet" style="background:#EEF2F8;"><i class="ti ti-device-laptop" aria-hidden="true" style="color:var(--text2);"></i></div><div class="winfo"><div class="wprice">R$ 1.400</div><div class="wname">iPad Air + Apple Pencil</div><div class="wmeta"><span>Beatriz N.</span><span>2 dias</span></div></div><button class="wbtn"><i class="ti ti-brand-whatsapp" aria-hidden="true"></i>Falar</button></div>
+            <div class="wcard"><div class="wimg livro" style="background:var(--blue-pale);"><i class="ti ti-books" aria-hidden="true" style="color:var(--blue-mid);"></i></div><div class="winfo"><div class="wprice">R$ 200</div><div class="wname">Clínica Médica USP — 7 vol.</div><div class="wmeta"><span>Pedro A.</span><span>3 dias</span></div></div><button class="wbtn"><i class="ti ti-brand-whatsapp" aria-hidden="true"></i>Falar</button></div>
+            <div style="height:12px;"></div>
+          </div>
+        </div>
+        <div class="navbar">
+          <button class="ni" onclick="go('p-home')"><i class="ti ti-home" aria-hidden="true"></i><span class="nl">Início</span></button>
+          <button class="ni" onclick="go('p-opp')"><i class="ti ti-search" aria-hidden="true"></i><span class="nl">Buscar</span></button>
+          <button class="ni" onclick="go('p-rede')"><i class="ti ti-users" aria-hidden="true"></i><span class="nl">Rede</span></button>
+          <button class="ni on" onclick="go('p-bazar')"><i class="ti ti-shopping-bag" aria-hidden="true"></i><span class="nl">Bazarzinho</span></button>
+          <button class="ni" onclick="go('p-perfil')"><i class="ti ti-user" aria-hidden="true"></i><span class="nl">Perfil</span></button>
+        </div>
+      </div>
+
+      <!-- NOTIF -->
+      <div id="p-notif" class="page">
+        <div class="hdr"><div class="hdr-row"><div><div class="eyebrow">Central</div><div class="htitle">Notifi<span>cações</span></div></div><div class="hactions"><button class="ibtn" aria-label="Marcar lidas"><i class="ti ti-checks" aria-hidden="true"></i></button></div></div></div>
+        <div class="chips"><span class="chip on">Todas</span><span class="chip">IC</span><span class="chip">Extensão</span><span class="chip">Bazarzinho</span></div>
+        <div class="scroll">
+          <div class="feed">
+            <div class="sec">Hoje</div>
+            <div class="ncard unread"><div class="nico" style="background:var(--blue-pale);"><i class="ti ti-sparkles" aria-hidden="true" style="color:var(--blue);"></i></div><div><div class="ntitle">Nova vaga compatível com você</div><div class="nsub">Microbioma — Prof. Carla Mendes · 92% match</div><div class="ntime">há 30 min</div></div></div>
+            <div class="ncard unread"><div class="nico" style="background:var(--red-lt);"><i class="ti ti-clock-exclamation" aria-hidden="true" style="color:var(--red);"></i></div><div><div class="ntitle">Prazo em 3 dias</div><div class="nsub">Extensão Itaquera · 5 vagas disponíveis</div><div class="ntime">há 2h</div></div></div>
+            <div class="ncard unread"><div class="nico" style="background:var(--gold-pale);"><i class="ti ti-shopping-bag" aria-hidden="true" style="color:var(--gold);"></i></div><div><div class="ntitle">Interesse no seu anúncio</div><div class="nsub">Rafael P. quer o Gray's Anatomy</div><div class="ntime">há 3h</div></div></div>
+            <div class="sec">Ontem</div>
+            <div class="ncard"><div class="nico" style="background:var(--green-lt);"><i class="ti ti-building-community" aria-hidden="true" style="color:var(--green-mid);"></i></div><div><div class="ntitle">Nova vaga de extensão</div><div class="nsub">Saúde na Escola — Prof. Regina Souza</div><div class="ntime">ontem 14h</div></div></div>
+            <div class="ncard"><div class="nico" style="background:var(--blue-pale);"><i class="ti ti-user-check" aria-hidden="true" style="color:var(--blue);"></i></div><div><div class="ntitle">Professor visualizou seu perfil</div><div class="nsub">Prof. Dr. André Moreira · Cardiologia</div><div class="ntime">ontem 9h</div></div></div>
+            <div style="height:12px;"></div>
+          </div>
+        </div>
+        <div class="navbar">
+          <button class="ni" onclick="go('p-home')"><i class="ti ti-home" aria-hidden="true"></i><span class="nl">Início</span></button>
+          <button class="ni" onclick="go('p-opp')"><i class="ti ti-search" aria-hidden="true"></i><span class="nl">Buscar</span></button>
+          <button class="ni" onclick="go('p-rede')"><i class="ti ti-users" aria-hidden="true"></i><span class="nl">Rede</span></button>
+          <button class="ni" onclick="go('p-bazar')"><i class="ti ti-shopping-bag" aria-hidden="true"></i><span class="nl">Bazarzinho</span></button>
+          <button class="ni" onclick="go('p-perfil')"><i class="ti ti-user" aria-hidden="true"></i><span class="nl">Perfil</span></button>
+        </div>
+      </div>
+
+      <!-- PERFIL -->
+      <div id="p-perfil" class="page">
+        <div class="scroll">
+          <div class="prof-hero">
+            <div class="prof-av">A</div>
+            <div class="prof-nm">Ana Silva</div>
+            <div class="prof-sub">Medicina · 4° ano · FASM Itaquera</div>
+            <div class="prof-tags"><span class="ptag">Aluna</span><span class="ptag">@santamarcelina.edu.br</span><span class="ptag">RGM verificado</span></div>
+            <div class="prog-bar"><div class="prog-fill"></div></div>
+            <div class="prog-lbl">Perfil 72% completo</div>
+          </div>
+          <div class="stats-grid">
+            <div class="sg"><div class="sg-n">3</div><div class="sg-l">Candidaturas</div></div>
+            <div class="sg"><div class="sg-n">2</div><div class="sg-l">Anúncios Bazar</div></div>
+            <div class="sg"><div class="sg-n">5</div><div class="sg-l">Vagas salvas</div></div>
+            <div class="sg"><div class="sg-n">94%</div><div class="sg-l">Maior match</div></div>
+          </div>
+          <div class="pf-sec"><div class="pf-tit">Áreas de interesse</div></div>
+          <div class="int-wrap"><span class="int-tag sel">Cardiologia</span><span class="int-tag sel">Neurologia</span><span class="int-tag sel">Pediatria</span><span class="int-tag sel">Saúde pública</span><span class="int-tag add"><i class="ti ti-plus" style="font-size:10px;" aria-hidden="true"></i> Adicionar</span></div>
+          <div class="pf-sec"><div class="pf-tit">Minha conta</div>
+            <div class="pf-card">
+              <div class="pfrow"><div class="pfrow-ico" style="background:var(--blue-pale);"><i class="ti ti-id-badge" aria-hidden="true" style="color:var(--blue);"></i></div><div><div class="pfrow-nm">Dados acadêmicos</div><div class="pfrow-sb">RGM · Turma · Semestre</div></div><i class="ti ti-chevron-right pfrow-r" aria-hidden="true"></i></div>
+              <div class="pfrow"><div class="pfrow-ico" style="background:var(--green-lt);"><i class="ti ti-clock" aria-hidden="true" style="color:var(--green-mid);"></i></div><div><div class="pfrow-nm">Disponibilidade</div><div class="pfrow-sb">8h/semana · Presencial</div></div><i class="ti ti-chevron-right pfrow-r" aria-hidden="true"></i></div>
+              <div class="pfrow"><div class="pfrow-ico" style="background:var(--gold-pale);"><i class="ti ti-file-cv" aria-hidden="true" style="color:var(--gold);"></i></div><div><div class="pfrow-nm">Currículo</div><div class="pfrow-sb">Adicione para melhorar o match</div></div><span style="font-size:9px;font-weight:700;background:var(--gold-pale);color:#7A5C00;padding:2px 6px;border-radius:4px;margin-left:auto;">Incompleto</span></div>
+            </div>
+          </div>
+          <div class="pf-sec"><div class="pf-tit">Configurações</div>
+            <div class="pf-card">
+              <div class="pfrow"><div class="pfrow-ico" style="background:var(--blue-pale);"><i class="ti ti-bell" aria-hidden="true" style="color:var(--blue);"></i></div><div><div class="pfrow-nm">Notificações</div><div class="pfrow-sb">IC, extensão, Bazarzinho</div></div><i class="ti ti-chevron-right pfrow-r" aria-hidden="true"></i></div>
+              <div class="pfrow"><div class="pfrow-ico" style="background:var(--surface2);"><i class="ti ti-shield-lock" aria-hidden="true" style="color:var(--text2);"></i></div><div><div class="pfrow-nm">Privacidade & dados</div><div class="pfrow-sb">LGPD · Seus dados</div></div><i class="ti ti-chevron-right pfrow-r" aria-hidden="true"></i></div>
+              <div class="pfrow" onclick="go('p-login')"><div class="pfrow-ico" style="background:var(--red-lt);"><i class="ti ti-logout" aria-hidden="true" style="color:var(--red);"></i></div><div><div class="pfrow-nm">Sair da conta</div><div class="pfrow-sb">@santamarcelina.edu.br</div></div><i class="ti ti-chevron-right pfrow-r" aria-hidden="true"></i></div>
+            </div>
+          </div>
+          <div style="height:80px;"></div>
+        </div>
+        <div class="navbar">
+          <button class="ni" onclick="go('p-home')"><i class="ti ti-home" aria-hidden="true"></i><span class="nl">Início</span></button>
+          <button class="ni" onclick="go('p-opp')"><i class="ti ti-search" aria-hidden="true"></i><span class="nl">Buscar</span></button>
+          <button class="ni" onclick="go('p-rede')"><i class="ti ti-users" aria-hidden="true"></i><span class="nl">Rede</span></button>
+          <button class="ni" onclick="go('p-bazar')"><i class="ti ti-shopping-bag" aria-hidden="true"></i><span class="nl">Bazarzinho</span></button>
+          <button class="ni on" onclick="go('p-perfil')"><i class="ti ti-user" aria-hidden="true"></i><span class="nl">Perfil</span></button>
+        </div>
+      </div>
+
+    </div><!-- /app -->
+  </div><!-- /screen -->
+</div><!-- /iphone -->
+
+<script>
+function go(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+</script>
+</body>
+</html>
